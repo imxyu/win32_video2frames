@@ -621,6 +621,7 @@ void ExtractionWorker(wstring rootOutDir, int interval, RECT roi) {
 
         WCHAR fName[MAX_PATH], fExt[MAX_PATH];
         _wsplitpath_s(currentFile.c_str(), NULL, 0, NULL, 0, fName, MAX_PATH, fExt, MAX_PATH);
+        wstring videoBaseName = fName;  // 保存视频文件名（不含扩展名）
         wstring subOutDir = rootOutDir + L"\\" + fName;
 
         CreateDirectoryW(subOutDir.c_str(), NULL);
@@ -671,9 +672,9 @@ void ExtractionWorker(wstring rootOutDir, int interval, RECT roi) {
                     if (pCropped) pSaveBmp = pCropped;
                 }
 
-                // 使用实际的帧索引作为文件名
+                // 使用"视频文件名_帧序号"格式作为文件名
                 WCHAR filePath[MAX_PATH];
-                swprintf(filePath, MAX_PATH, L"%s\\%05d.jpg", subOutDir.c_str(), frameIndex);
+                swprintf(filePath, MAX_PATH, L"%s\\%s_%05d.jpg", subOutDir.c_str(), videoBaseName.c_str(), frameIndex);
                 pSaveBmp->Save(filePath, &jpgClsid, NULL);
 
                 if (pCropped) delete pCropped;
